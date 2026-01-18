@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # 1. バックエンド (Hono)
+  backend:
+    build: ./backend
+    container_name: todo-backend
+    ports:
+      - "3001:3000" # PCの3001番 -> コンテナの3000番
+    volumes:
+      - ./backend:/app # ソースコードを同期（ホットリロード用）
+      - /app/node_modules
+    environment:
+      - DATABASE_URL=postgresql://user:password@db:5432/todo_db
+    depends_on:
+      - db
+    command: npm run dev
+
+  # 2. フロントエンド (Next.js)
+  frontend:
+    build: ./frontend
+    container_name: todo-frontend
+    ports:
+      - "3000:3000" # PCの3000番 -> コンテナの3000番
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:3001
+    command: npm run dev
+
+  # 3. データベース (PostgreSQL)
+  # DBはDocker公式が用意している「完成品のイメージ」をそのまま使うため、
+  # わざわざDockerfileを自作する必要がありません。
+  # （※HonoやNext.jsは「自分の書いたコード」を動かす必要があるため、
+  #   ベース（Node.js）の上にコードを乗せる手順書＝Dockerfileが必要です）
+  # 「postgres:15-alpine」と指定するだけで、
+  # 「軽量LinuxにPostgreSQL 15がインストール済みの状態」で起動します。
+  db:
+    image: postgres:15-alpine
+    container_name: todo-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=todo_db
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
