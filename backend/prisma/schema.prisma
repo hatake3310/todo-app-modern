@@ -1,0 +1,22 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Todoテーブルの定義（モデル）
+model Todo {
+  id        Int      @id @default(autoincrement()) // ID: 自動採番
+  title     String   // タイトル: 文字列
+  completed Boolean  @default(false) // 完了フラグ: デフォルトはfalse(未完了)
+  createdAt DateTime @default(now()) // 作成日時: 現在時刻を自動設定
+  updatedAt DateTime @updatedAt      // 更新日時: 更新時に自動設定
+}
