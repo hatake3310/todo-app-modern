@@ -6,15 +6,15 @@ services:
     build: ./backend
     container_name: todo-backend
     ports:
-      - "3001:3000" # PCの3001番 -> コンテナの3000番
-      - "5555:5555" # Prisma Studio用
-    volumes:
-      - ./backend:/app # ソースコードを同期（ホットリロード用）
-      - /app/node_modules
+      - "3001:3000"
+      - "5555:5555"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/todo_db
     depends_on:
       - db
+    volumes:
+      - ./:/workspaces/TODO-APP-MODERN
+    working_dir: /workspaces/TODO-APP-MODERN/backend
     command: npm run dev
 
   # 2. フロントエンド (Next.js)
@@ -22,12 +22,13 @@ services:
     build: ./frontend
     container_name: todo-frontend
     ports:
-      - "3000:3000" # PCの3000番 -> コンテナの3000番
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
+      - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:3001
+      - HOSTNAME=0.0.0.0
+    volumes:
+      - ./:/workspaces/TODO-APP-MODERN
+    working_dir: /workspaces/TODO-APP-MODERN/frontend
     command: npm run dev
 
   # 3. データベース (PostgreSQL)

@@ -1,0 +1,17 @@
+{
+  "name": "TODO APP (Monorepo)",
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "backend",
+  "workspaceFolder": "/workspaces/TODO-APP-MODERN",
+  "remoteUser": "root", 
+  "overrideCommand": true,
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Prisma.prisma"
+      ]
+    }
+  }
+}
