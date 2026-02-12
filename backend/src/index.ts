@@ -48,7 +48,7 @@ app.get('/', (c) => {
 
 serve({
   fetch: app.fetch,
-  port: 3000
+  port: 8080 // 3000から変更
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
 })
