@@ -6,7 +6,7 @@ services:
     build: ./backend
     container_name: todo-backend
     ports:
-      - "3001:3000"
+      - "3001:8080"
       - "5555:5555"
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/todo_db
@@ -15,21 +15,21 @@ services:
     volumes:
       - ./:/workspaces/TODO-APP-MODERN
     working_dir: /workspaces/TODO-APP-MODERN/backend
-    command: npm run dev
+    # 自動起動させない（PID 1 問題の回避）
+    command: sleep infinity
 
   # 2. フロントエンド (Next.js)
   frontend:
     build: ./frontend
     container_name: todo-frontend
-    ports:
-      - "3000:3000"
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:3001
       - HOSTNAME=0.0.0.0
     volumes:
       - ./:/workspaces/TODO-APP-MODERN
     working_dir: /workspaces/TODO-APP-MODERN/frontend
-    command: npm run dev
+    # 自動起動させない
+    command: sleep infinity
 
   # 3. データベース (PostgreSQL)
   # DBはDocker公式が用意している「完成品のイメージ」をそのまま使うため、
