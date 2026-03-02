@@ -1,9 +1,19 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 const app = new Hono()
+
+app.use('/*', cors({
+  origin: 'http://localhost:3000',
+  allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type'],
+  allowMethods: ['POST', 'GET', 'PUT', 'DELETE', 'OPTIONS'],
+  exposeHeaders: ['Content-Length', 'X-Kuma-Revision'],
+  maxAge: 600,
+  credentials: true,
+}))
 
 app.get('/todos', async (c) => {
   const todos = await prisma.todo.findMany(
@@ -43,7 +53,7 @@ app.delete('/todos/:id', async (c) => {
 })
 
 app.get('/', (c) => {
-  return c.text('Hola! Hello Hono!!')
+  return c.text('Hello Hono!!')
 })
 
 serve({
